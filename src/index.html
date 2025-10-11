@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgendaMed - Agendamento de Coleta de Medicamentos</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/main.css">
+
+    <!-- External Libraries (temporary CDN, will be replaced by npm packages) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Cabeçalho Fixo -->
+    <header class="bg-white shadow-md fixed top-0 w-full z-10">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center flex-wrap gap-2">
+                <div>
+                    <p class="font-medium text-gray-900" id="user-name">Carregando...</p>
+                    <p class="text-sm text-gray-500" id="user-cpf">000.000.000-00</p>
+                </div>
+                <div id="notification-area" class="flex items-center space-x-2">
+                    <i data-feather="bell" class="text-red-600 pulse-dot hidden" id="notification-icon"></i>
+                    <span id="alert-message" class="text-sm font-medium text-gray-700 hidden max-w-md"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- Seção de Introdução -->
+        <section class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Sistema de Agendamento de Coleta</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Este sistema permite agendar a coleta de medicamentos nas unidades de saúde, gerenciar seus agendamentos e gerar tokens de check-in para validação presencial.
+            </p>
+        </section>
+
+        <!-- Seção de Botões de Ação -->
+        <section class="max-w-md mx-auto space-y-4">
+            <!-- Botão Agendar -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <button id="schedule-btn" class="w-full flex justify-between items-center p-4 bg-red-600 text-white font-bold hover:bg-red-700 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <i data-feather="calendar" class="w-5 h-5"></i>
+                        AGENDAR
+                    </span>
+                    <i data-feather="chevron-down" class="transition-transform duration-300" id="schedule-chevron"></i>
+                </button>
+                <div id="schedule-content" class="expandable-content bg-white">
+                    <div class="p-4">
+                        <div class="calendar mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <button id="prev-month" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                    <i data-feather="chevron-left"></i>
+                                </button>
+                                <h3 id="current-month" class="font-bold text-gray-900"></h3>
+                                <button id="next-month" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 mb-2">
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Dom</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Seg</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Ter</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Qua</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Qui</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Sex</div>
+                                <div class="text-center font-medium text-gray-500 py-2 text-sm">Sáb</div>
+                            </div>
+                            <div id="calendar-days" class="grid grid-cols-7 gap-1"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 text-center">Selecione uma data disponível para agendar sua coleta</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Cancelar -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <button id="cancel-btn" class="w-full flex justify-between items-center p-4 bg-yellow-400 text-black font-bold hover:bg-yellow-500 transition-colors" disabled>
+                    <span class="flex items-center gap-2">
+                        <i data-feather="x-circle" class="w-5 h-5"></i>
+                        CANCELAR
+                    </span>
+                    <i data-feather="chevron-down" class="transition-transform duration-300" id="cancel-chevron"></i>
+                </button>
+                <div id="cancel-content" class="expandable-content bg-white">
+                    <div class="p-4">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                            <p class="font-medium text-yellow-800 mb-2">⚠️ Atenção!</p>
+                            <p class="text-yellow-700">Ao cancelar, você deverá agendar novamente outra data de coleta. Deseja realmente cancelar?</p>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button id="confirm-cancel" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                                SIM, CANCELAR
+                            </button>
+                            <button id="decline-cancel" class="flex-1 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                                NÃO, MANTER
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Gerar Token -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <button id="token-btn" class="w-full flex justify-between items-center p-4 bg-black text-white font-bold hover:bg-gray-800 transition-colors" disabled>
+                    <span class="flex items-center gap-2">
+                        <i data-feather="shield" class="w-5 h-5"></i>
+                        GERAR TOKEN DE CHECK-IN
+                    </span>
+                    <i data-feather="chevron-down" class="transition-transform duration-300" id="token-chevron"></i>
+                </button>
+                <div id="token-content" class="expandable-content bg-white">
+                    <div class="p-4">
+                        <div class="bg-yellow-50 p-6 rounded-lg text-center mb-4 border-2 border-yellow-400" id="token-container">
+                            <p class="text-sm mb-4 text-gray-700 font-medium">
+                                <i data-feather="info" class="inline w-4 h-4"></i>
+                                Este token deve ser apresentado na unidade de saúde para check-in
+                            </p>
+                            <div id="token" class="text-4xl font-bold mb-4 tracking-wider text-gray-900">------</div>
+                            <div class="flex justify-center mb-4">
+                                <div id="qr-code" class="bg-white p-2 rounded-lg shadow-inner"></div>
+                            </div>
+                            <div id="countdown" class="text-sm font-medium text-gray-700 bg-white px-4 py-2 rounded-full inline-block">
+                                Válido por: 15:00
+                            </div>
+                        </div>
+                        <button id="copy-token" class="w-full py-3 bg-gray-200 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-300 transition-colors font-medium">
+                            <i data-feather="copy" class="w-4 h-4"></i>
+                            <span>Copiar Token</span>
+                        </button>
+                        <button id="regenerate-token" class="w-full mt-2 py-3 bg-black text-white rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 transition-colors font-medium">
+                            <i data-feather="refresh-cw" class="w-4 h-4"></i>
+                            <span>Gerar Novo Token</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de Seleção de Data -->
+        <div id="date-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20 px-4">
+            <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg text-gray-900">Confirmar Agendamento</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <i data-feather="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4">
+                    <p class="text-sm text-blue-700">
+                        <strong>Data selecionada:</strong><br>
+                        <span id="selected-date" class="font-medium"></span>
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="time-slot" class="block text-sm font-medium mb-2 text-gray-700">
+                        <i data-feather="clock" class="inline w-4 h-4"></i> Horário da Coleta
+                    </label>
+                    <select id="time-slot" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                        <option value="">Selecione um horário</option>
+                        <option value="08:00">08:00</option>
+                        <option value="08:30">08:30</option>
+                        <option value="09:00">09:00</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:30">12:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:00">17:00</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label for="health-unit" class="block text-sm font-medium mb-2 text-gray-700">
+                        <i data-feather="map-pin" class="inline w-4 h-4"></i> Unidade de Saúde
+                    </label>
+                    <select id="health-unit" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                        <option value="">Selecione uma unidade</option>
+                        <option value="UBS Central">UBS Central</option>
+                        <option value="Posto de Saúde Norte">Posto de Saúde Norte</option>
+                        <option value="Hospital Municipal Sul">Hospital Municipal Sul</option>
+                        <option value="Farmácia Popular Oeste">Farmácia Popular Oeste</option>
+                        <option value="Centro de Saúde Leste">Centro de Saúde Leste</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button id="back-btn" class="px-6 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                        VOLTAR
+                    </button>
+                    <button id="confirm-appointment" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                        CONFIRMAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notificação Toast -->
+    <div id="toast" class="toast fixed bottom-4 left-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg hidden z-30 text-center">
+        Mensagem
+    </div>
+
+    <!-- JavaScript Application -->
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>
