@@ -1,0 +1,27 @@
+/* Base styles and Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables */
+:root {
+  --color-primary: #DC143C;        /* Crimson Red */
+  --color-secondary: #FFD700;      /* Gold */
+  --color-primary-hover: #B21030;
+  --color-bg-gray: #F9FAFB;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* Mobile-first responsive breakpoints match Tailwind */
+/* sm: 640px, md: 768px, lg: 1024px, xl: 1280px */

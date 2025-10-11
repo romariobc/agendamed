@@ -1,0 +1,36 @@
+/* Calendar Component Styles */
+
+.calendar-day {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 9999px; /* full rounded */
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+/* Hover state for enabled days */
+.calendar-day:hover:not(.disabled) {
+  background-color: #FEE2E2; /* red-100 */
+  transform: scale(1.05);
+  transition: all var(--transition-fast);
+}
+
+/* Selected date */
+.calendar-day.selected {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+}
+
+/* Disabled dates (past dates) */
+.calendar-day.disabled {
+  color: #D1D5DB; /* gray-300 */
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Today indicator */
+.calendar-day.today {
+  border: 2px solid var(--color-secondary);
+  font-weight: bold;
+}

@@ -1,0 +1,22 @@
+/* Toast Notification Styles */
+
+.toast {
+  animation: slideIn var(--transition-slow), fadeOut var(--transition-slow) 2.5s forwards;
+}
+
+/* Toast animations */
+@keyframes slideIn {
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}

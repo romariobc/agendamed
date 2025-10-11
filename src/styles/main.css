@@ -1,0 +1,18 @@
+/**
+ * AgendaMed - Main Stylesheet
+ *
+ * This file imports all modular CSS files in the correct order.
+ * Order matters: base styles first, then components, then animations.
+ */
+
+/* Base styles and Tailwind */
+@import './base.css';
+
+/* Component-specific styles */
+@import './components/calendar.css';
+@import './components/modal.css';
+@import './components/toast.css';
+@import './components/buttons.css';
+
+/* Global animations */
+@import './animations.css';
