@@ -1,0 +1,17 @@
+{
+  "project": {
+    "name": "AgendaMed - Sistema de Agendamento",
+    "version": "0.1.0",
+    "description": "Sistema de agendamento de coleta de medicamentos com QR Code",
+    "type": "web-application"
+  },
+  "context": {
+    "auto_load": true,
+    "files_to_track": [
+      "agendamed.html",
+      "src/**/*.js",
+      "src/**/*.css",
+      "package.json"
+    ]
+  }
+}
