@@ -1,9 +1,3 @@
-# ============================================
-# 3. DOCUMENTAR CONTEXTO INICIAL
-# ============================================
-
-# Criar arquivo de visão geral do projeto
-cat > .claude/memory/project-overview.md << 'EOF'
 # AgendaMed - Sistema de Agendamento de Medicamentos
 
 ## Contexto do Desenvolvedor
@@ -12,22 +6,69 @@ cat > .claude/memory/project-overview.md << 'EOF'
 - **Objetivo**: Criar sistema profissional de agendamento
 
 ## Estado Atual do Projeto
-- Arquivo único: agendamed.html (HTML monolítico)
-- ~600 linhas de código (HTML + CSS + JS)
-- Funcionalidades implementadas:
-  ✅ Calendário interativo
-  ✅ Sistema de agendamento
-  ✅ Geração de token com QR Code
-  ✅ Validação de agendamento único
-  ✅ Sistema de notificações toast
-  ✅ LocalStorage para persistência
 
-## Próximos Passos
-1. Modularizar código (separar HTML, CSS, JS)
-2. Criar estrutura de projeto profissional
-3. Adicionar backend com API REST
-4. Implementar autenticação
-5. Deploy em produção
+### **Fase de Refatoração em Andamento** ✅
+**Data Início**: 2025-10-11
+
+#### Estrutura Atual
+- ✅ **Backup criado**: `agendamed.backup.html` (versão monolítica preservada)
+- ✅ **Estrutura de diretórios**: Criada e versionada
+- 🔄 **Em andamento**: Extração de CSS e JS para módulos
+
+#### Funcionalidades Implementadas (100% funcionais)
+- ✅ Calendário interativo
+- ✅ Sistema de agendamento
+- ✅ Geração de token com QR Code (15min validade)
+- ✅ Validação de agendamento único
+- ✅ Sistema de notificações toast
+- ✅ LocalStorage para persistência
+
+### Arquitetura Nova (Em Implementação)
+```
+agendamed/
+├── src/
+│   ├── styles/components/     # CSS modular
+│   ├── js/
+│   │   ├── config/           # Constantes
+│   │   ├── core/             # Estado + DOM
+│   │   ├── services/         # Storage + API
+│   │   ├── modules/          # Calendário, tokens, etc
+│   │   ├── components/       # UI components
+│   │   └── utils/            # Helpers
+│   └── lib/                  # Libs locais
+├── public/assets/            # Estáticos
+├── tests/                    # Testes futuros
+├── config/                   # Vite, Tailwind, ESLint
+└── docs/                     # Documentação
+```
+
+## Próximos Passos (Roadmap Atualizado)
+
+### Fase 1: Refatoração ✅ (Em Andamento)
+1. ✅ Criar estrutura de diretórios
+2. ✅ Backup do original
+3. 🔄 Extrair CSS para módulos
+4. 🔄 Modularizar JavaScript (ES6)
+5. ⏳ Configurar Vite + Tailwind local
+6. ⏳ Configurar ESLint + Prettier
+
+### Fase 2: Backend (Próximo)
+1. API REST (Express.js)
+2. Banco SQLite → PostgreSQL
+3. Autenticação JWT
+4. Migrations e seeds
+
+### Fase 3: Features Avançadas
+1. PWA (offline-first)
+2. Notificações push
+3. Dashboard administrativo
+4. Scanner QR Code
+
+### Fase 4: Deploy & Compliance
+1. LGPD compliance completo
+2. Política de privacidade
+3. Deploy Vercel + Railway
+4. CI/CD GitHub Actions
 
 ## Restrições e Requisitos
 - Mobile-first (maioria dos usuários em celular)
@@ -37,106 +78,39 @@ cat > .claude/memory/project-overview.md << 'EOF'
 - Acessível para idosos
 
 ## Stack Tecnológica
-- **Atual**: HTML + Vanilla JS + Tailwind CDN
-- **Futuro**: 
-  - Frontend: Módulos ES6 + Vite
-  - Backend: Express.js + SQLite → PostgreSQL
-  - Deploy: Vercel (frontend) + Railway (backend)
-EOF
 
-# Criar arquivo de decisões técnicas
-cat > .claude/memory/technical-decisions.md << 'EOF'
-# Decisões Técnicas - AgendaMed
+### **Atual (Refatoração)**
+- **Frontend**: HTML5 + Vanilla JS (ES6 Modules) + Tailwind CSS
+- **Build**: Vite 5.x
+- **Qualidade**: ESLint + Prettier
+- **Versionamento**: Git
 
-## Por que começar com HTML monolítico?
+### **Futuro**
+- **Backend**: Express.js + SQLite → PostgreSQL
+- **Deploy**: Vercel (frontend) + Railway (backend)
+- **Testes**: Jest + Playwright
+- **CI/CD**: GitHub Actions
 
-**Data**: 2025-10-11
-**Decisão**: Prototipar em arquivo único
+## Módulos Identificados (Código Original)
 
-**Razões**:
-1. Validação rápida de conceito
-2. Zero configuração de build
-3. Fácil compartilhar e testar
-4. DeepSeek gerou bem assim
+| Módulo | Linhas | Arquivo Destino |
+|--------|--------|-----------------|
+| State Management | 293-301 | `src/js/core/state.js` |
+| DOM References | 304-333 | `src/js/core/dom.js` |
+| Calendar | 466-539 | `src/js/modules/calendar.js` |
+| Appointments | 364-400 | `src/js/modules/appointments.js` |
+| Token Generator | 566-626 | `src/js/modules/token.js` |
+| UI Controller | 437-464 | `src/js/components/ui-controller.js` |
+| Notifications | 541-654 | `src/js/components/toast.js` |
+| CSS Animations | 10-79 | `src/styles/animations.css` |
 
-**Próximo Passo**: Refatorar para projeto modular
+## Commits Importantes
+- `bc8eecb` - Commit inicial
+- `a17a381` - Estrutura de diretórios criada
+- `ef5459c` - Backup do arquivo monolítico
 
----
-
-## Por que Vanilla JS?
-
-**Razões**:
-1. Aprendizado dos fundamentos (importante para ADS)
-2. Performance superior
-3. Zero dependências inicialmente
-4. Migração fácil para React depois se necessário
-
----
-
-## Por que Tailwind CSS?
-
-**Razões**:
-1. Desenvolvimento rápido
-2. Design responsivo fácil
-3. Customização via classes
-4. Usado via CDN (sem build inicial)
-
-**Futuro**: Migrar para Tailwind compilado para produção
-EOF
-
-# Criar arquivo de conhecimento do domínio (farmácia)
-cat > .claude/memory/domain-knowledge.md << 'EOF'
-# Conhecimento do Domínio - Farmácia e Saúde Pública
-
-## Contexto do Sistema de Saúde Brasileiro
-- SUS (Sistema Único de Saúde)
-- Farmácia Popular
-- UBS (Unidades Básicas de Saúde)
-- Programa de medicamentos gratuitos
-
-## Fluxo Atual de Coleta (Problema)
-1. Paciente vai à UBS sem agendamento
-2. Pega senha e espera na fila (1-3 horas)
-3. Apresenta receita e documentos
-4. Recebe medicamentos
-5. Assina comprovante de retirada
-
-**Problemas**:
-- Longas filas
-- Desperdício de tempo do paciente
-- Desorganização no atendimento
-- Risco de falta de medicamento (sem previsão de demanda)
-
-## Fluxo Proposto (Solução AgendaMed)
-1. Paciente acessa sistema online
-2. Agenda data/hora/local de coleta
-3. Recebe confirmação
-4. No dia, gera token de check-in
-5. Apresenta token + documentos na UBS
-6. Coleta sem fila (agendamento priorizado)
-
-**Benefícios**:
-- Redução de 70% no tempo de espera
-- Melhor distribuição de demanda
-- Planejamento de estoque
-- Satisfação do usuário
-
-## Tipos de Medicamentos
-- Antibióticos (receita especial)
-- Hipertensão (uso contínuo)
-- Diabetes (insulina, etc)
-- Anticoncepcional
-- Vitaminas e suplementos
-
-## Compliance e Regulamentação
-- Lei 13.709/2018 (LGPD) - dados de saúde são sensíveis
-- Anvisa - rastreabilidade de medicamentos
-- CFM - prescrição médica obrigatória
-- Receita médica válida por 30-120 dias (dependendo)
-
-## Validações Necessárias
-- CPF válido
-- Receita médica dentro da validade
-- Medicamento disponível na unidade
-- Paciente cadastrado no sistema (SUS)
-EOF
+## Notas de Desenvolvimento
+- **Backup sempre preservado**: `agendamed.backup.html` não será deletado
+- **Funcionalidades 100% mantidas**: Refatoração não quebra features
+- **Modularização gradual**: CSS → JS → Config → Testes
+- **Documentação contínua**: CLAUDE.md atualizado a cada fase
